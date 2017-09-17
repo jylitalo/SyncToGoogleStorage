@@ -1,0 +1,18 @@
+- name: create storage
+  command: "{{gsutil}} -q mb -c {{storage_class}} -l {{location}} -p {{project}} gs://{{bucket}}"
+  ignore_errors: yes
+- name: make it all public
+  command: "{{gsutil}} defacl ch -u AllUsers:R gs://{{bucket}}"
+- name: make it website
+  command: "{{gsutil}} web set -m index.html -e 404.html gs://{{bucket}}"
+- name: sync content
+  command: "{{gsutil}} -m rsync -r {{item.extra_args}} {{item.src}}/ gs://{{bucket}}/{{item.dest}}"
+  args:
+    chdir: "{{chdir}}"
+  with_items: "{{dirs}}"
+- name: delete deprecated content
+  command: "{{gsutil}} -m rsync -r -d {{item.extra_args}} {{item.src}}/ gs://{{bucket}}/{{item.dest}}"
+  args:
+    chdir: "{{chdir}}"
+  with_items: "{{dirs|reverse|list}}"
+

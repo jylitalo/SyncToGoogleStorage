@@ -1,0 +1,9 @@
+bucket: "invalid"
+chdir: "."
+location: "us-central1"
+project: "invalid"
+storage_class: "regional"
+gsutil: "gsutil"
+dirs:
+- {src: ".", dest: "", extra_args: ""}
+
